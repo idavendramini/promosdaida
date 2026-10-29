@@ -23,17 +23,17 @@
 <div class="modal-backdrop" id="adminModal"><div class="modal"><div class="modal-head"><h2>Área administrativa</h2><button class="close" data-close="adminModal" aria-label="Fechar">×</button></div>
 <div id="loginBox"><p>Entre com o e-mail e a senha cadastrados no Supabase.</p><div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" placeholder="Seu e-mail"></div><div class="field"><label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" placeholder="Sua senha"></div><button class="btn" id="loginBtn">Entrar</button><div class="status" id="loginStatus"></div></div>
 <div class="admin-panel" id="adminPanel">
-<div class="notice">As imagens devem ser links públicos de imagem. Para cada post, você pode cadastrar vários produtos, cada um com seu próprio link de afiliada.</div>
+<div class="notice">Escolha as imagens direto do computador. Use JPG, PNG ou WebP com até 10 MB. Para cada post, você pode cadastrar vários produtos, cada um com seu próprio link de afiliada.</div>
 <div class="admin-section"><h3 id="postFormTitle">Criar novo post</h3><form id="postForm"><input type="hidden" id="postId"><div class="form-grid">
 <div class="field"><label for="postTitle">Título do post *</label><input id="postTitle" required maxlength="120" placeholder="Ex.: 8 achadinhos para organizar a cozinha"></div>
 <div class="field"><label for="postCategory">Categoria</label><input id="postCategory" value="Achadinhos gerais" placeholder="Casa, beleza, cozinha…"></div>
 <div class="field wide"><label for="postDescription">Descrição</label><textarea id="postDescription" placeholder="Uma frase para apresentar a seleção"></textarea></div>
-<div class="field wide"><label for="postCover">URL da imagem de capa (opcional)</label><input id="postCover" type="url" placeholder="https://..."></div>
+<div class="field wide"><label for="postCoverFile">Foto de capa (opcional)</label><input id="postCoverFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><input id="postCover" type="hidden"></div>
 <div class="field"><label for="postPublished">Visibilidade</label><select id="postPublished"><option value="true">Publicado</option><option value="false">Rascunho</option></select></div>
 </div><button class="btn" id="savePostBtn" type="submit">Salvar post</button> <button class="btn ghost hidden" id="cancelEditBtn" type="button">Cancelar edição</button><div class="status" id="postStatus"></div></form></div>
 <div class="admin-section"><h3 id="productFormTitle">Adicionar produto ao post</h3><form id="productForm"><div class="field"><label for="productPost">Post *</label><select id="productPost" required><option value="">Selecione um post</option></select></div><div class="form-grid">
 <div class="field"><label for="productName">Nome do produto *</label><input id="productName" required placeholder="Nome do achadinho"></div>
-<div class="field"><label for="productImage">URL da imagem (opcional)</label><input id="productImage" type="url" placeholder="https://..."></div>
+<div class="field"><label for="productImageFile">Foto do produto (opcional)</label><input id="productImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><input id="productImage" type="hidden"></div>
 <div class="field wide"><label for="productDescription">Descrição curta</label><input id="productDescription" placeholder="Detalhe opcional"></div>
 <div class="field wide"><label for="productUrl">Link de afiliada *</label><input id="productUrl" type="url" required placeholder="https://..."></div>
 </div><button class="btn" type="submit" id="saveProductBtn">Adicionar produto</button><button class="btn ghost hidden" type="button" id="cancelProductEdit">Cancelar edição</button><div class="status" id="productStatus"></div></form></div>
@@ -48,6 +48,18 @@
  const client = configured && window.supabase ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
  let posts = [], products = [], category = "Todos", editingProduct = null;
  const $ = id => document.getElementById(id);
+ const imageBucket = "promosdaida-images";
+ async function uploadImage(file, folder){
+   if(!file) return null;
+   if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)){throw new Error("Escolha uma imagem JPG, PNG, WebP ou GIF.");}
+   if(file.size > 10 * 1024 * 1024){throw new Error("A imagem precisa ter até 10 MB.");}
+   const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g,"") || "jpg";
+   const path = folder + "/" + crypto.randomUUID() + "." + ext;
+   const {error} = await client.storage.from(imageBucket).upload(path,file,{contentType:file.type,upsert:false});
+   if(error) throw error;
+   const {data} = client.storage.from(imageBucket).getPublicUrl(path);
+   return data.publicUrl;
+ }
  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const img = (url, alt="") => url ? `<img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" onerror="this.style.display='none'">` : `<div class="placeholder">🧡</div>`;
  function status(id, msg){ $(id).textContent = msg || ""; }
@@ -98,13 +110,13 @@
    $("adminPosts").querySelectorAll("[data-edit-product]").forEach(b=>b.addEventListener("click",()=>editProduct(products.find(p=>p.id===b.dataset.editProduct))));
    $("adminPosts").querySelectorAll("[data-delete-product]").forEach(b=>b.addEventListener("click",()=>deleteProduct(b.dataset.deleteProduct)));
  }
- function editPost(p){if(!p)return;$("postId").value=p.id;$("postTitle").value=p.title;$("postCategory").value=p.category||"";$("postDescription").value=p.description||"";$("postCover").value=p.cover_image_url||"";$("postPublished").value=String(p.published);$("postFormTitle").textContent="Editar post";$("savePostBtn").textContent="Salvar alterações";$("cancelEditBtn").classList.remove("hidden");$("postTitle").focus();}
- function resetPostForm(){$("postForm").reset();$("postId").value="";$("postCategory").value="Achadinhos gerais";$("postPublished").value="true";$("postFormTitle").textContent="Criar novo post";$("savePostBtn").textContent="Salvar post";$("cancelEditBtn").classList.add("hidden");status("postStatus","");}
+ function editPost(p){if(!p)return;$("postCoverFile").value="";$("postId").value=p.id;$("postTitle").value=p.title;$("postCategory").value=p.category||"";$("postDescription").value=p.description||"";$("postCover").value=p.cover_image_url||"";$("postPublished").value=String(p.published);$("postFormTitle").textContent="Editar post";$("savePostBtn").textContent="Salvar alterações";$("cancelEditBtn").classList.remove("hidden");$("postTitle").focus();}
+ function resetPostForm(){$("postForm").reset();$("postCoverFile").value="";$("postId").value="";$("postCategory").value="Achadinhos gerais";$("postPublished").value="true";$("postFormTitle").textContent="Criar novo post";$("savePostBtn").textContent="Salvar post";$("cancelEditBtn").classList.add("hidden");status("postStatus","");}
  $("cancelEditBtn").addEventListener("click",resetPostForm);
- $("postForm").addEventListener("submit",async e=>{e.preventDefault();const id=$("postId").value;const payload={title:$("postTitle").value.trim(),category:$("postCategory").value.trim()||"Achadinhos gerais",description:$("postDescription").value.trim(),cover_image_url:$("postCover").value.trim()||null,published:$("postPublished").value==="true"};const res=id?await client.from("posts").update(payload).eq("id",id):await client.from("posts").insert(payload);if(res.error){status("postStatus","Não foi possível salvar: "+res.error.message);return;}status("postStatus","Post salvo!");resetPostForm();await refreshAdmin();});
+ $("postForm").addEventListener("submit",async e=>{e.preventDefault();const id=$("postId").value;const btn=$("savePostBtn");btn.disabled=true;status("postStatus","Salvando post e enviando imagem…");try{let cover=$("postCover").value.trim()||null;const file=$("postCoverFile").files[0];if(file)cover=await uploadImage(file,"capas");const payload={title:$("postTitle").value.trim(),category:$("postCategory").value.trim()||"Achadinhos gerais",description:$("postDescription").value.trim(),cover_image_url:cover,published:$("postPublished").value==="true"};const res=id?await client.from("posts").update(payload).eq("id",id):await client.from("posts").insert(payload);if(res.error)throw res.error;status("postStatus","Post salvo!");resetPostForm();await refreshAdmin();}catch(err){status("postStatus","Não foi possível salvar: "+(err.message||"verifique o armazenamento de imagens."));}finally{btn.disabled=false;}});
  $("productForm").addEventListener("submit",async e=>{e.preventDefault();const payload={post_id:$("productPost").value,name:$("productName").value.trim(),description:$("productDescription").value.trim(),image_url:$("productImage").value.trim()||null,affiliate_url:$("productUrl").value.trim(),position:products.filter(p=>p.post_id===$("productPost").value).length};let res;if(editingProduct){res=await client.from("products").update(payload).eq("id",editingProduct); }else{res=await client.from("products").insert(payload);}if(res.error){status("productStatus","Não foi possível salvar: "+res.error.message);return;}status("productStatus","Produto salvo!");resetProductForm();await refreshAdmin();});
- function editProduct(p){if(!p)return;editingProduct=p.id;$("productPost").value=p.post_id;$("productName").value=p.name;$("productDescription").value=p.description||"";$("productImage").value=p.image_url||"";$("productUrl").value=p.affiliate_url;$("productFormTitle").textContent="Editar produto";$("saveProductBtn").textContent="Salvar alterações";$("cancelProductEdit").classList.remove("hidden");$("productName").focus();}
- function resetProductForm(){$("productForm").reset();editingProduct=null;$("productFormTitle").textContent="Adicionar produto ao post";$("saveProductBtn").textContent="Adicionar produto";$("cancelProductEdit").classList.add("hidden");status("productStatus","");}
+ function editProduct(p){if(!p)return;$("productImageFile").value="";editingProduct=p.id;$("productPost").value=p.post_id;$("productName").value=p.name;$("productDescription").value=p.description||"";$("productImage").value=p.image_url||"";$("productUrl").value=p.affiliate_url;$("productFormTitle").textContent="Editar produto";$("saveProductBtn").textContent="Salvar alterações";$("cancelProductEdit").classList.remove("hidden");$("productName").focus();}
+ function resetProductForm(){$("productForm").reset();$("productImageFile").value="";editingProduct=null;$("productFormTitle").textContent="Adicionar produto ao post";$("saveProductBtn").textContent="Adicionar produto";$("cancelProductEdit").classList.add("hidden");status("productStatus","");}
  $("cancelProductEdit").addEventListener("click",resetProductForm);
  async function deletePost(id){if(!confirm("Excluir este post e os produtos associados?"))return;const r=await client.from("posts").delete().eq("id",id);if(r.error){status("postStatus","Erro ao excluir: "+r.error.message);return;}await refreshAdmin();}
  async function deleteProduct(id){if(!confirm("Excluir este produto?"))return;const r=await client.from("products").delete().eq("id",id);if(r.error){status("productStatus","Erro ao excluir: "+r.error.message);return;}await refreshAdmin();}
