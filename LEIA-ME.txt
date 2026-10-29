@@ -1,0 +1,35 @@
+PROMOSDAIDA — PROTÓTIPO E PREPARAÇÃO PARA PUBLICAÇÃO
+
+ARQUIVOS
+- index.html: protótipo navegável de vitrine + painel de cadastro manual.
+- supabase-schema.sql: estrutura inicial de banco de dados com publicações e produtos.
+- config.example.js: exemplo da configuração pública do Supabase.
+- LEIA-ME.txt: este guia.
+
+O QUE JÁ FUNCIONA NO PROTÓTIPO
+- Grade de publicações com filtro por categoria e busca.
+- Página interna com lista de produtos e botões para os links.
+- Cadastro, edição e exclusão de publicações.
+- Vários produtos por publicação.
+- Importação/exportação JSON.
+
+LIMITAÇÃO IMPORTANTE
+A versão index.html é uma demonstração local e salva os cadastros no armazenamento do navegador. Ela ainda NÃO está conectada ao Supabase nem a um painel com autenticação de produção. Não publique o painel local como se fosse um admin seguro, nem use dados confidenciais nele.
+
+CAMINHO PARA COLOCAR ONLINE
+1. Criar um projeto Supabase e configurar recuperação de senha e login.
+2. Executar supabase-schema.sql no SQL Editor.
+3. Configurar políticas para permitir administração somente à conta da proprietária. A política inicial de usuários autenticados é uma base técnica e deve ser restringida antes de uso público.
+4. Implementar no frontend o login e a leitura/gravação no banco (substituindo o armazenamento local).
+5. Publicar a parte pública e o painel em uma hospedagem estática ou plataforma web.
+6. Registrar um domínio disponível, por exemplo promosdaida.com.br, e apontá-lo para a hospedagem.
+7. Testar no celular, revisar links de afiliada e adicionar uma identificação de links comissionados.
+
+SEGURANÇA
+- Nunca compartilhe a senha do Supabase ou a chave service_role.
+- A chave anon/public pode ser usada no navegador somente com Row Level Security (RLS) bem configurado.
+- Antes de lançar, limitar a administração à conta da proprietária; não permitir que qualquer usuário autenticado altere publicações.
+- Verifique termos e regras de cada programa de afiliados quanto à divulgação dos links.
+
+OBSERVAÇÃO
+Este pacote é a base do projeto, não uma publicação online concluída. Para conectar serviços externos, será necessário configurar as contas e as chaves no ambiente apropriado.

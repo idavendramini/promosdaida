@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Promosdaida | Achadinhos</title>
+<style>
+:root{--pink:#e95f91;--pink2:#fff0f5;--ink:#33252c;--muted:#806f78;--line:#f0dfe6;--bg:#fffafd;--green:#198754}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;background:#ffffffed;backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:2}
+.nav{max-width:1100px;margin:auto;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{font-weight:850;font-size:1.35rem;letter-spacing:-.04em}.brand span{color:var(--pink)}.tag{color:var(--muted);font-size:.86rem;margin-top:3px}
+button,.btn{border:0;border-radius:999px;background:var(--pink);color:white;font-weight:750;padding:11px 17px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+button.secondary{background:white;color:var(--ink);border:1px solid var(--line)}button.danger{background:#fff0f0;color:#b42318;border:1px solid #f5d0d0}
+main{max-width:1100px;margin:0 auto;padding:28px 22px 60px}
+.hero{background:linear-gradient(120deg,#fff0f5,#fff9fc 55%,#f8f0ff);border:1px solid var(--line);border-radius:26px;padding:28px;margin-bottom:26px}
+.hero h1{font-size:clamp(1.65rem,4vw,2.5rem);letter-spacing:-.05em;margin:0 0 10px}.hero p{color:var(--muted);max-width:650px;line-height:1.55;margin:0 0 18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0}
+input,textarea,select{width:100%;border:1px solid var(--line);background:white;border-radius:12px;padding:12px 13px;font:inherit;color:var(--ink)}
+input:focus,textarea:focus,select:focus{outline:2px solid #f8c5d8;border-color:var(--pink)}
+.search{max-width:360px}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:white;border:1px solid var(--line);border-radius:999px;padding:8px 13px;font-size:.9rem;cursor:pointer}.chip.active{background:var(--pink2);border-color:#f3b3cc;color:#9e315d}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+.card{background:white;border:1px solid var(--line);border-radius:19px;overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:pointer}.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px #55213d10}
+.cover{width:100%;aspect-ratio:4/4.5;object-fit:cover;background:var(--pink2);display:flex;align-items:center;justify-content:center;color:#bc6c8c;font-size:3rem}
+.cover img{width:100%;height:100%;object-fit:cover}.cardbody{padding:14px}.card h3{font-size:1rem;margin:0 0 7px}.meta{font-size:.82rem;color:var(--muted)}.cardfoot{display:flex;justify-content:space-between;align-items:center;margin-top:13px;color:var(--pink);font-weight:750;font-size:.9rem}
+.panel,.detail{background:white;border:1px solid var(--line);border-radius:22px;padding:22px;margin:15px 0}.panel h2,.detail h2{margin-top:0}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}.field label{font-size:.9rem;font-weight:750}.hint{font-size:.82rem;color:var(--muted);line-height:1.4}.products{display:grid;gap:12px}.productrow{display:grid;grid-template-columns:1fr 2fr auto;gap:10px;align-items:center;padding:12px;background:#fff9fc;border:1px solid var(--line);border-radius:14px}
+.detailhead{display:grid;grid-template-columns:220px 1fr;gap:22px;align-items:start}.detailcover{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px;background:var(--pink2)}.productcard{display:grid;grid-template-columns:76px 1fr auto;gap:14px;align-items:center;border-bottom:1px solid var(--line);padding:14px 0}.productcard:last-child{border-bottom:0}.productthumb{width:76px;height:76px;object-fit:cover;border-radius:12px;background:var(--pink2)}.productname{font-weight:750}.offer{background:var(--green);white-space:nowrap}
+.hidden{display:none!important}.empty{text-align:center;padding:50px 18px;color:var(--muted);background:white;border:1px dashed var(--line);border-radius:18px}.adminbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.footer{text-align:center;color:var(--muted);font-size:.82rem;padding:30px 12px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:620px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}main{padding:18px 13px 45px}.nav{padding:13px}.hero{padding:22px}.formgrid,.detailhead{grid-template-columns:1fr}.detailcover{max-width:220px}.productrow{grid-template-columns:1fr}.productcard{grid-template-columns:60px 1fr}.productthumb{width:60px;height:60px}.productcard .offer{grid-column:2;justify-self:start}.brand{font-size:1.15rem}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div><div class="brand">♡ Promos<span>daida</span></div><div class="tag">Achadinhos que valem a pena</div></div><button class="secondary" id="adminToggle">Área administrativa</button></div></header>
+<main>
+<section id="home">
+  <div class="hero"><h1>Seus próximos achadinhos favoritos 💗</h1><p>Seleções de produtos para casa, beleza, organização e muito mais. Abra uma publicação e encontre os links de cada produto em um só lugar.</p><div class="chips" id="categoryChips"></div></div>
+  <div class="toolbar"><input class="search" id="search" placeholder="Buscar publicações…"><span class="hint" id="count"></span></div>
+  <div class="grid" id="postGrid"></div><div class="empty hidden" id="empty">Ainda não há publicações cadastradas.<br>Entre na área administrativa para adicionar seu primeiro achadinho.</div>
+</section>
+<section id="detailView" class="hidden"><button class="secondary" id="backBtn">← Todas as publicações</button><div id="detailContent"></div></section>
+<section id="adminView" class="hidden">
+  <div class="adminbar"><div><h1 style="margin:0">Painel da Promosdaida</h1><p class="hint">Cadastre uma publicação e adicione todos os produtos dela.</p></div><button class="secondary" id="backHome">Ver vitrine</button></div>
+  <div class="panel">
+    <h2 id="formTitle">Nova publicação</h2>
+    <form id="postForm">
+      <div class="formgrid">
+        <div class="field"><label for="postTitle">Título da publicação *</label><input id="postTitle" required placeholder="Ex.: 10 itens para sua casa"></div>
+        <div class="field"><label for="postCategory">Categoria</label><select id="postCategory"><option>Casa</option><option>Beleza</option><option>Moda</option><option>Organização</option><option>Tecnologia</option><option>Achadinhos gerais</option></select></div>
+      </div>
+      <div class="field"><label for="postDescription">Descrição curta</label><textarea id="postDescription" rows="2" placeholder="Uma frase para apresentar essa seleção…"></textarea></div>
+      <div class="formgrid">
+        <div class="field"><label for="postImage">URL da imagem de capa (opcional)</label><input id="postImage" type="url" placeholder="https://…"><span class="hint">Use um link público de imagem. A imagem pode ser adicionada depois.</span></div>
+        <div class="field"><label for="postDate">Data da publicação</label><input id="postDate" type="date"></div>
+      </div>
+      <h3>Produtos desta publicação</h3><p class="hint">Cada produto precisa de nome e link de afiliada. A imagem é opcional.</p>
+      <div id="productInputs" class="products"></div><button type="button" class="secondary" id="addProduct">＋ Adicionar produto</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px"><button type="submit">Salvar publicação</button><button type="button" class="secondary hidden" id="cancelEdit">Cancelar edição</button></div>
+    </form>
+  </div>
+  <div class="panel"><h2>Publicações cadastradas</h2><div id="adminPosts"></div></div>
+  <div class="panel"><h3>Importar / exportar cópia de segurança</h3><p class="hint">Exporte um arquivo JSON para guardar uma cópia dos cadastros ou importá-los neste navegador. Esta versão de demonstração salva os dados apenas neste navegador.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="secondary" id="exportBtn">Exportar JSON</button><label class="btn" style="background:#fff;color:var(--ink);border:1px solid var(--line)">Importar JSON<input id="importFile" type="file" accept="application/json" style="display:none"></label></div></div>
+</section>
+</main>
+<div class="footer">Promosdaida ♡ · Links de afiliada podem gerar comissão sem custo adicional para você.</div>
+<script>
+const KEY='promosdaida_demo_posts_v1';
+let posts=JSON.parse(localStorage.getItem(KEY)||'[]'), editingId=null, activeCategory='Todas';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const validUrl=s=>{try{let u=new URL(s);return ['http:','https:'].includes(u.protocol)}catch{return false}};
+function persist(){localStorage.setItem(KEY,JSON.stringify(posts));renderHome();renderAdmin()}
+function placeholder(title='♡'){return `<div class="cover">${esc(title.slice(0,1).toUpperCase())}</div>`}
+function coverHTML(url,title){return url&&validUrl(url)?`<div class="cover"><img src="${esc(url)}" alt="${esc(title)}" loading="lazy" onerror="this.parentElement.innerHTML='♡'"></div>`:placeholder(title)}
+function renderHome(){
+ const cats=['Todas',...new Set(posts.map(p=>p.category).filter(Boolean))];
+ $('categoryChips').innerHTML=cats.map(c=>`<button class="chip ${activeCategory===c?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+ const q=$('search').value.toLowerCase().trim();
+ const shown=posts.filter(p=>(activeCategory==='Todas'||p.category===activeCategory)&&(`${p.title} ${p.description} ${p.category}`).toLowerCase().includes(q)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ $('postGrid').innerHTML=shown.map(p=>`<article class="card" data-open="${p.id}">${coverHTML(p.image,p.title)}<div class="cardbody"><h3>${esc(p.title)}</h3><div class="meta">${esc(p.category||'Achadinhos')} · ${p.products.length} produtos</div><div class="cardfoot"><span>Ver achadinhos</span><span>↗</span></div></div></article>`).join('');
+ $('count').textContent=`${shown.length} publicação(ões)`;
+ $('empty').classList.toggle('hidden',posts.length>0);
+}
+function showDetail(id){
+ const p=posts.find(x=>x.id===id);if(!p)return;
+ $('home').classList.add('hidden');$('adminView').classList.add('hidden');$('detailView').classList.remove('hidden');
+ $('detailContent').innerHTML=`<div class="detail"><div class="detailhead">${p.image&&validUrl(p.image)?`<img class="detailcover" src="${esc(p.image)}" alt="${esc(p.title)}">`:placeholder(p.title)}<div><div class="meta">${esc(p.category)}${p.date?' · '+esc(p.date):''}</div><h1>${esc(p.title)}</h1><p style="color:var(--muted);line-height:1.6">${esc(p.description)}</p><p><b>${p.products.length} produtos</b> nesta seleção</p></div></div><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><div>${p.products.map((x,i)=>`<div class="productcard">${x.image&&validUrl(x.image)?`<img class="productthumb" src="${esc(x.image)}" alt="">`:`<div class="productthumb" style="display:grid;place-items:center;color:#c16a8c;font-size:1.5rem">♡</div>`}<div><div class="productname">${esc(x.name)}</div>${x.description?`<div class="hint" style="margin-top:5px">${esc(x.description)}</div>`:''}</div><a class="btn offer" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer sponsored">Ver oferta ↗</a></div>`).join('')}</div><p class="hint">Alguns links podem ser links de afiliada. A disponibilidade e os preços são definidos pelas lojas.</p></div>`;
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function productInput(data={}){const wrap=document.createElement('div');wrap.className='productrow';wrap.innerHTML=`<div class="field" style="margin:0"><label>Nome do produto *</label><input class="prod-name" required value="${esc(data.name||'')}" placeholder="Ex.: Organizador de cozinha"></div><div class="field" style="margin:0"><label>Link de afiliada *</label><input class="prod-url" required type="url" value="${esc(data.url||'')}" placeholder="https://…"><label style="margin-top:4px">Imagem do produto (opcional)</label><input class="prod-image" type="url" value="${esc(data.image||'')}" placeholder="https://…"><label style="margin-top:4px">Descrição (opcional)</label><input class="prod-desc" value="${esc(data.description||'')}" placeholder="Cor, tamanho ou detalhe"></div><button type="button" class="danger removeProduct">Remover</button>`;wrap.querySelector('.removeProduct').onclick=()=>{if($('productInputs').children.length>1)wrap.remove();else alert('Adicione pelo menos um produto à publicação.')};$('productInputs').appendChild(wrap)}
+function resetForm(){editingId=null;$('postForm').reset();$('productInputs').innerHTML='';productInput();$('formTitle').textContent='Nova publicação';$('cancelEdit').classList.add('hidden');$('postDate').value=new Date().toISOString().slice(0,10)}
+function renderAdmin(){
+ $('adminPosts').innerHTML=posts.length?posts.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);flex-wrap:wrap"><div><b>${esc(p.title)}</b><div class="hint">${esc(p.category)} · ${p.products.length} produtos</div></div><div style="display:flex;gap:7px"><button class="secondary" data-edit="${p.id}">Editar</button><button class="danger" data-delete="${p.id}">Excluir</button></div></div>`).join(''):'<p class="hint">Nenhuma publicação cadastrada.</p>';
+}
+function editPost(id){const p=posts.find(x=>x.id===id);if(!p)return;editingId=id;$('postTitle').value=p.title;$('postCategory').value=p.category;$('postDescription').value=p.description||'';$('postImage').value=p.image||'';$('postDate').value=p.date||'';$('productInputs').innerHTML='';p.products.forEach(productInput);$('formTitle').textContent='Editar publicação';$('cancelEdit').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+function showAdmin(){ $('home').classList.add('hidden');$('detailView').classList.add('hidden');$('adminView').classList.remove('hidden');renderAdmin();window.scrollTo({top:0,behavior:'smooth'})}
+function showHome(){ $('adminView').classList.add('hidden');$('detailView').classList.add('hidden');$('home').classList.remove('hidden');renderHome();window.scrollTo({top:0,behavior:'smooth'})}
+$('adminToggle').onclick=()=>{if(!$('adminView').classList.contains('hidden'))showHome();else showAdmin()};
+$('backHome').onclick=showHome;$('backBtn').onclick=showHome;$('search').oninput=renderHome;
+$('categoryChips').onclick=e=>{const b=e.target.closest('[data-cat]');if(b){activeCategory=b.dataset.cat;renderHome()}};
+$('postGrid').onclick=e=>{const c=e.target.closest('[data-open]');if(c)showDetail(c.dataset.open)};
+$('addProduct').onclick=()=>productInput();$('cancelEdit').onclick=resetForm;
+$('postForm').onsubmit=e=>{e.preventDefault();const products=[...$('productInputs').querySelectorAll('.productrow')].map(r=>({name:r.querySelector('.prod-name').value.trim(),url:r.querySelector('.prod-url').value.trim(),image:r.querySelector('.prod-image').value.trim(),description:r.querySelector('.prod-desc').value.trim()}));if(!products.length||products.some(p=>!p.name||!validUrl(p.url))){alert('Confira o nome e o link válido de cada produto.');return}const item={id:editingId||crypto.randomUUID(),title:$('postTitle').value.trim(),category:$('postCategory').value,description:$('postDescription').value.trim(),image:$('postImage').value.trim(),date:$('postDate').value,products};if(item.image&&!validUrl(item.image)){alert('O link da imagem de capa precisa começar com http:// ou https://.');return}if(editingId)posts=posts.map(p=>p.id===editingId?item:p);else posts.push(item);persist();resetForm();alert('Publicação salva neste navegador.');showAdmin()};
+$('adminPosts').onclick=e=>{const ed=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(ed)editPost(ed.dataset.edit);if(del){const p=posts.find(x=>x.id===del.dataset.delete);if(p&&confirm(`Excluir "${p.title}"?`)){posts=posts.filter(x=>x.id!==p.id);persist()}}};
+$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(posts,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='promosdaida-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const arr=JSON.parse(await f.text());if(!Array.isArray(arr)||arr.some(p=>!p.title||!Array.isArray(p.products)))throw Error();if(confirm('Importar vai substituir os cadastros atuais neste navegador. Continuar?')){posts=arr;persist();alert('Importação concluída.')}}catch{alert('Arquivo inválido. Selecione um backup JSON exportado pelo site.')}e.target.value=''};
+resetForm();renderHome();
+</script>
+</body></html>
