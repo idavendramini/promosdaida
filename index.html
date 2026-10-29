@@ -24,9 +24,9 @@
 <div class="admin-panel" id="adminPanel">
 <div class="notice">Escolha as imagens direto do computador. Use JPG, PNG ou WebP com até 10 MB. Para cada post, você pode cadastrar vários produtos, cada um com seu próprio link de afiliada.</div>
 <div class="admin-section"><h3 id="postFormTitle">Criar novo post</h3><form id="postForm"><input type="hidden" id="postId"><div class="form-grid">
-<div class="field"><label for="postTitle">Título do post *</label><input id="postTitle" required maxlength="120" placeholder="Ex.: 8 achadinhos para organizar a cozinha"></div>
+<div class="field"><label for="postTitle">Número do post *</label><input id="postTitle" required maxlength="120" placeholder="Ex.: 17"></div>
 <div class="field"><label for="postCategory">Categoria</label><input id="postCategory" value="Achadinhos gerais" placeholder="Casa, beleza, cozinha…"></div>
-<div class="field wide"><label for="postDescription">Descrição</label><textarea id="postDescription" placeholder="Uma frase para apresentar a seleção"></textarea></div>
+<div class="field wide"><label for="postDescription">Palavras-chave</label><textarea id="postDescription" placeholder="Ex.: cozinha, organização, utensílios"></textarea></div>
 <div class="field wide"><label for="postCoverFile">Foto de capa (opcional)</label><input id="postCoverFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><input id="postCover" type="hidden"></div>
 <div class="field"><label for="postPublished">Visibilidade</label><select id="postPublished"><option value="true">Publicado</option><option value="false">Rascunho</option></select></div>
 </div><button class="btn" id="savePostBtn" type="submit">Salvar post</button> <button class="btn ghost hidden" id="cancelEditBtn" type="button">Cancelar edição</button><div class="status" id="postStatus"></div></form></div>
