@@ -65,6 +65,8 @@
    return data.publicUrl;
  }
  const displayPostTitle = s => /^post\s/i.test(String(s??"")) ? String(s) : `Post ${s}`;
+ const postNumber = p => {const m=String(p.title??"").match(/\d+/);return m?Number(m[0]):Number.MAX_SAFE_INTEGER;};
+ const sortPostsNumerically = list => [...list].sort((a,b)=>postNumber(a)-postNumber(b) || String(a.title??"").localeCompare(String(b.title??""),"pt-BR"));
  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const img = (url, alt="") => url ? `<img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" onerror="this.style.display='none'">` : `<div class="placeholder">🧡</div>`;
  function status(id, msg){ $(id).textContent = msg || ""; }
@@ -80,7 +82,7 @@
      client.from("products").select("*").order("position",{ascending:true})
    ]);
    if(pr.error || rr.error){$("posts").innerHTML='<div class="empty">Não foi possível carregar os posts. Confira as configurações e as permissões do banco.</div>';return;}
-   posts=pr.data||[]; const publishedIds=new Set(posts.map(p=>p.id)); products=(rr.data||[]).filter(p=>publishedIds.has(p.post_id));
+   posts=sortPostsNumerically(pr.data||[]); const publishedIds=new Set(posts.map(p=>p.id)); products=(rr.data||[]).filter(p=>publishedIds.has(p.post_id));
    renderFilters(); renderPosts();
  }
  function renderFilters(){
@@ -124,7 +126,7 @@
    const {data:ps,error:pe}=await client.from("posts").select("*").order("created_at",{ascending:false});
    const {data:xs,error:xe}=await client.from("products").select("*").order("position",{ascending:true});
    if(pe||xe){status("postStatus","Erro ao carregar dados: "+(pe?.message||xe?.message));return;}
-   const all=ps||[];posts=all.filter(p=>p.published);products=(xs||[]);syncCategoryOptions($("postCategory").value==="__new__"?$("newPostCategory").value.trim():$("postCategory").value||"Achadinhos gerais");renderFilters();renderPosts();
+   const all=sortPostsNumerically(ps||[]);posts=sortPostsNumerically(all.filter(p=>p.published));products=(xs||[]);syncCategoryOptions($("postCategory").value==="__new__"?$("newPostCategory").value.trim():$("postCategory").value||"Achadinhos gerais");renderFilters();renderPosts();
    
    renderAdminPosts(all);
  } 
@@ -139,7 +141,7 @@
  $("cancelEditBtn").addEventListener("click",()=>{resetPostForm();setAdminTab("edit");});
  $("discardPostBtn").addEventListener("click",()=>{if($("postId").value||$("postTitle").value.trim()||[...$("productRows").querySelectorAll(".row-name")].some(x=>x.value.trim())||[...$("productRows").querySelectorAll(".row-url")].some(x=>x.value.trim())){if(!confirm("Sair sem salvar as alterações deste formulário?"))return;}resetPostForm();close("adminModal");});
  $("postForm").addEventListener("submit",async e=>{e.preventDefault();const id=$("postId").value;const btn=$("savePostBtn");btn.disabled=true;status("postStatus","Salvando post e produtos…");try{const allRows=[...$("productRows").querySelectorAll(".product-row")];for(const r of allRows){const name=r.querySelector(".row-name").value.trim(),url=r.querySelector(".row-url").value.trim();if((name&&!url)||(!name&&url))throw new Error("Complete o nome e o link de cada produto preenchido.");}const rows=allRows.filter(r=>r.querySelector(".row-name").value.trim()&&r.querySelector(".row-url").value.trim());let cover=$("postCover").value.trim()||null;const file=$("postCoverFile").files[0];if(file)cover=await uploadImage(file,"capas");const payload={title:$("postTitle").value.trim(),category:selectedCategory()||"Achadinhos gerais",description:$("postDescription").value.trim(),cover_image_url:cover,published:$("postPublished").value==="true"};const res=id?await client.from("posts").update(payload).eq("id",id).select().single():await client.from("posts").insert(payload).select().single();if(res.error)throw res.error;const postId=res.data.id;const existing=products.filter(p=>p.post_id===postId);const kept=[];for(let i=0;i<rows.length;i++){const r=rows[i],productId=r.dataset.productId||null;const pp={post_id:postId,name:r.querySelector(".row-name").value.trim(),affiliate_url:r.querySelector(".row-url").value.trim(),description:"",image_url:null,position:i};let result;if(productId){kept.push(productId);result=await client.from("products").update(pp).eq("id",productId);}else{result=await client.from("products").insert(pp);}if(result.error)throw result.error;}const removed=existing.filter(p=>!kept.includes(p.id)).map(p=>p.id);if(removed.length){const del=await client.from("products").delete().in("id",removed);if(del.error)throw del.error;}status("postStatus","Post e produtos salvos!");resetPostForm();await refreshAdmin();close("adminModal");}catch(err){status("postStatus","Não foi possível salvar tudo: "+(err.message||"Tente novamente."));}finally{btn.disabled=false;}});
- $("adminPostSearch").addEventListener("input",async()=>{const {data}=await client.from("posts").select("*").order("created_at",{ascending:false});renderAdminPosts(data||[]);});
+ $("adminPostSearch").addEventListener("input",async()=>{const {data}=await client.from("posts").select("*").order("created_at",{ascending:false});renderAdminPosts(sortPostsNumerically(data||[]));});
  async function deletePost(id){if(!confirm("Excluir este post e todos os produtos associados?"))return;const r=await client.from("posts").delete().eq("id",id);if(r.error){status("postStatus","Erro ao excluir: "+r.error.message);return;}await refreshAdmin();}
   $("loginBtn").addEventListener("click",async()=>{status("loginStatus","Entrando…");const {error}=await client.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){status("loginStatus","Não foi possível entrar: confira o e-mail e a senha.");return;}$("loginBox").classList.add("hidden");$("adminPanel").classList.add("visible");status("loginStatus","");await refreshAdmin();});
  $("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();$("adminPanel").classList.remove("visible");$("loginBox").classList.remove("hidden");resetPostForm();});
