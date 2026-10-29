@@ -48,7 +48,7 @@
  const client = configured && window.supabase ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
  let posts = [], products = [], category = "Todos", editingProduct = null;
  const $ = id => document.getElementById(id);
- const imageBucket = "promosdaida-images";
+ const imageBucket = "promosdaida-imagens";
  async function uploadImage(file, folder){
    if(!file) return null;
    if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)){throw new Error("Escolha uma imagem JPG, PNG, WebP ou GIF.");}
