@@ -66,7 +66,7 @@
  }
  const displayPostTitle = s => /^post\s/i.test(String(s??"")) ? String(s) : `Post ${s}`;
  const postNumber = p => {const m=String(p.title??"").match(/\d+/);return m?Number(m[0]):Number.MAX_SAFE_INTEGER;};
- const sortPostsNumerically = list => [...list].sort((a,b)=>postNumber(a)-postNumber(b) || String(a.title??"").localeCompare(String(b.title??""),"pt-BR"));
+ const sortPostsNumerically = list => [...list].sort((a,b)=>postNumber(b)-postNumber(a) || String(b.title??"").localeCompare(String(a.title??""),"pt-BR"));
  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const img = (url, alt="") => url ? `<img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" onerror="this.style.display='none'">` : `<div class="placeholder">🧡</div>`;
  function status(id, msg){ $(id).textContent = msg || ""; }
